@@ -41,9 +41,9 @@ public class RandomFieldComparator<T extends  Account> implements Comparator<T> 
 
          if (compareOnlyAccessibleFields) {
              this.collect = Arrays.stream(targetType.getDeclaredFields())
-                     .filter(x -> x.getModifiers() != Modifier.PRIVATE
-                             || checkGetMethod(x)
-                             || Comparable.class.isAssignableFrom(x.getType()))
+                     .filter(x -> (x.getModifiers() != Modifier.PRIVATE
+                             || checkGetMethod(x))
+                             && Comparable.class.isAssignableFrom(x.getType()))
                      .peek(x -> x.setAccessible(true))
                      .collect(Collectors.toList());
          } else {
