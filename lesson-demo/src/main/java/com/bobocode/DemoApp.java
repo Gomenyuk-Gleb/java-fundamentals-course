@@ -1,15 +1,37 @@
 package com.bobocode;
 
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.FixedValue;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.Objects;
 import java.util.Stack;
 
 public class DemoApp {
 
-        public static void main(String[] args) {
-            var head = createLinkedList(4, 3, 9, 1);
-            printReversedRecursively(head);
-            printReversedUsingStack(head);
-        }
+    public static void main(String[] args) {
+
+        var methodLoggingProxy = createMethodLoggingProxy(ProxyClass.class);
+        methodLoggingProxy.hello();
+        methodLoggingProxy.gloryToUkraine();
+    }
+
+    @SuppressWarnings("unckecked")
+    public static <T> T createMethodLoggingProxy(Class<T> targetClass) {
+        var enhancer = new Enhancer();
+        enhancer.setSuperclass(targetClass);
+        enhancer.setCallback((MethodInterceptor) (obj, method, args, proxy) -> {
+            if (method.isAnnotationPresent(LogInvocation.class)) {
+                System.out.printf("[PROXY: Calling method '%s' of the class '%s']%n", method.getName(), targetClass.getSimpleName());
+            } else {
+            }
+            return "";
+        });
+
+        return targetClass.cast(enhancer.create());
+    }
+
 
         /**
          * Creates a list of linked {@link Node} objects based on the given array of elements and returns a head of the list.
