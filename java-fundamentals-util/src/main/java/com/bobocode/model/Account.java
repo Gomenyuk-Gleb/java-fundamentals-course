@@ -20,5 +20,6 @@ public class Account {
     private Sex sex;
     private LocalDate creationDate;
     private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal balanca = BigDecimal.ZERO;
 }
 
